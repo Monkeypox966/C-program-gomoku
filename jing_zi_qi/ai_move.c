@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "jing_zi_qi.h"
 struct move ai_move(int a, int b, int turn) // 递归实现minimax和alpha-beta剪枝算法
 {

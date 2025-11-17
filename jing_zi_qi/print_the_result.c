@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "jing_zi_qi.h"
 void print_the_result(void) // 打印棋局最终结果
 {

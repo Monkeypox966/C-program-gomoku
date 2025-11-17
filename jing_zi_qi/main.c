@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "jing_zi_qi.h"
 
 int board[3][3] = {0}; // 存储棋盘
