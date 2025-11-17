@@ -1,4 +1,7 @@
-void print_board() // 打印棋盘
+#include <stdio.h>
+#include <stdlib.h>
+#include "jing_zi_qi.h"
+void print_board(void) // 打印棋盘
 {
     printf("\n    0   1   2   y\n\n");
     for (int i = 0; i < 3; i++)

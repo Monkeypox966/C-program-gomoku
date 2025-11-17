@@ -1,4 +1,7 @@
-int judge() // 判断游戏是否结束，返回2表示未结束，-1表示人赢，1表示AI赢，0表示平局
+#include <stdio.h>
+#include <stdlib.h>
+#include "jing_zi_qi.h"
+int judge(void) // 判断游戏是否结束，返回2表示未结束，-1表示人赢，1表示AI赢，0表示平局
 {
     for (int i = 0; i < 3; i++) // 检查每行
     {

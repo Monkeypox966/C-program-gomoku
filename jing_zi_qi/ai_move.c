@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "jing_zi_qi.h"
 struct move ai_move(int a, int b, int turn) // 递归实现minimax和alpha-beta剪枝算法
 {
     struct move option;
@@ -11,9 +14,9 @@ struct move ai_move(int a, int b, int turn) // 递归实现minimax和alpha-beta�
     {
         option.score = -1000;
         int flag = 1; // 是否剪枝的标志
-        for (int i = 0; i < 3 & flag; i++)
+        for (int i = 0; i < 3 && flag; i++)
         {
-            for (int j = 0; j < 3 & flag; j++)
+            for (int j = 0; j < 3 && flag; j++)
             {
                 if (board[i][j] == 0) // 该位置为空
                 {
@@ -37,9 +40,9 @@ struct move ai_move(int a, int b, int turn) // 递归实现minimax和alpha-beta�
     {
         option.score = 1000;
         int flag = 1; // 是否剪枝的标志
-        for (int i = 0; i < 3 & flag; i++)
+        for (int i = 0; i < 3 && flag; i++)
         {
-            for (int j = 0; j < 3 & flag; j++)
+            for (int j = 0; j < 3 && flag; j++)
             {
                 if (board[i][j] == 0) // 该位置为空
                 {

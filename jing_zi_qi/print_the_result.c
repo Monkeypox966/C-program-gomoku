@@ -1,4 +1,7 @@
-void print_the_result() // 打印棋局最终结果
+#include <stdio.h>
+#include <stdlib.h>
+#include "jing_zi_qi.h"
+void print_the_result(void) // 打印棋局最终结果
 {
     int result = judge();
     if (result == -1)
