@@ -1,12 +1,12 @@
-#include "jing_zi_qi.h"
-void print_the_result(void) // 打印棋局最终结果
+#include "gomoku.h"
+
+void print_result(int result) // 打印棋局最终结果
 {
-    int result = judge();
-    if (result == -1)
+    if (result == 2)
     {
         printf("你赢了！\n");
     }
-    else if (result == 0)
+    else if (result == -1)
     {
         printf("平局！\n");
     }
