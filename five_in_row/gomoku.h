@@ -12,7 +12,7 @@
 #include <math.h>
 
 #define size 15 // 棋盘大小
-#define depth 5 // 递归深度，可控制难度,但对后期速度影响极大
+#define depth 3 // 递归深度，可控制难度,但对后期速度影响极大,不建议超过5
 
 extern int board[size][size];
 struct move // 结构体存储最佳落子位置和分数
@@ -23,6 +23,6 @@ struct move // 结构体存储最佳落子位置和分数
 
 void print_board(void);                                // 打印棋盘
 int judge(void);                                       // 判断游戏是否结束，返回0表示未结束，2表示人赢，1表示AI赢，-1表示平局
-int score(int turn);                                   // 棋盘估分
+int score(void);                                       // 棋盘估分
 void print_result(int result);                         // 打印棋局最终结果
 struct move ai_move(int a, int b, int turn, int deep); // 递归实现minimax和alpha-beta剪枝算法

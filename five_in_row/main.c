@@ -8,7 +8,7 @@ int main(void)
     while (1)
     {
         // 人下
-        printf("请输入你要下的位置(x y)："); // 必须用空格隔开
+        printf("Enter the position for your move(x y)："); // 必须用空格隔开
         scanf("%d %d", &x, &y);
         board[x][y] = 2;
         print_board();
@@ -20,9 +20,9 @@ int main(void)
             return 0;
         }
         // AI下
-        printf("AI落子:\n");
+        printf("AI is thinking:\n");
         struct move option = ai_move(-1000000000, 1000000000, 1, depth); // AI计算最佳落子点
-        board[option.x][option.y] = 1;                             // AI落子
+        board[option.x][option.y] = 1;                                   // AI落子
         print_board();
         temp = judge();
         if (temp != 0) // 游戏结束

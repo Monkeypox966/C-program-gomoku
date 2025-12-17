@@ -22,7 +22,7 @@ struct move ai_move(int a, int b, int turn, int deep) // 递归实现minimax和a
             option.score = 0;
             break;
         default:
-            option.score = score(turn);
+            option.score = score();
             break;
         }
     }
@@ -39,7 +39,7 @@ struct move ai_move(int a, int b, int turn, int deep) // 递归实现minimax和a
                     board[i][j] = 1;                               // AI下在该位置
                     struct move temp = ai_move(a, b, 0, deep - 1); // minimax递归
                     board[i][j] = 0;                               // 恢复该位置
-                    if (temp.score > option.score)                // 得分更高，下法对AI更有利
+                    if (temp.score > option.score)                 // 得分更高，下法对AI更有利
                     {
                         option.score = temp.score; // 更新得分和位置
                         option.x = i;
@@ -65,7 +65,7 @@ struct move ai_move(int a, int b, int turn, int deep) // 递归实现minimax和a
                     board[i][j] = 2;                               // 人下在该位置
                     struct move temp = ai_move(a, b, 1, deep - 1); // minimax递归
                     board[i][j] = 0;                               // 恢复该位置
-                    if (temp.score < option.score)                // 得分更低，下法对人更有利
+                    if (temp.score < option.score)                 // 得分更低，下法对人更有利
                     {
                         option.score = temp.score; // 更新得分和位置
                         option.x = i;
@@ -81,7 +81,7 @@ struct move ai_move(int a, int b, int turn, int deep) // 递归实现minimax和a
     return option; // 返回最佳落子位置和得分
 }
 
-int limit(int x, int y)
+int limit(int x, int y) // 限制下棋位置，以提升效率
 {
     int flag = 0;
     for (int i = x - 1; i <= x + 1 && i >= 0 && i < size; i++)
