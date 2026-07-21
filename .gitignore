@@ -1,0 +1,14 @@
+# Build artifacts
+*.o
+*.obj
+build/
+jing_zi_qi/build/
+
+# Keep committed binaries (gomoku.exe) for convenience; remove these lines to ignore them:
+# gomoku/gomoku.exe
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
