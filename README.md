@@ -35,8 +35,6 @@ C-program-gomoku/
 ├── README.md  LICENSE
 ```
 
-<br>
-
 
 # 一、五子棋人机对战系统（gomoku/）
 
