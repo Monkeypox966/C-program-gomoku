@@ -16,7 +16,7 @@ cd C-program-gomoku
 
 下文的构建命令使用 Windows 命令行与 MinGW-w64 工具链。仓库内五子棋构建脚本及附带库面向 Windows；不代表已经验证 Linux / macOS 图形版构建。
 
-```
+```text
 C-program-gomoku/
 ├── gomoku/          # Raylib 五子棋
 │   ├── main.c       # 入口：主菜单 + 模式分发
@@ -32,9 +32,10 @@ C-program-gomoku/
 │   ├── jing_zi_qi.h  CMakeLists.txt
 ├── raylib/          # 共享图形库（include / lib）
 ├── resources/       # 共享音效（knock.wav / cheers.wav）
-├── README.md  LICENSE
+└── README.md  LICENSE
 ```
 
+---
 
 # 一、五子棋人机对战系统（gomoku/）
 
