@@ -37,6 +37,7 @@ C-program-gomoku/
 
 <br>
 
+
 # 一、五子棋人机对战系统（gomoku/）
 
 《基于 Raylib 的五子棋人机对战系统》设计报告
@@ -139,9 +140,6 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 
 - 功能：独立的规则判定函数，额外检查棋盘是否下满。
 - 返回：0（进行中）、1（AI / 白方获胜）、2（玩家 / 黑方获胜）、-1（平局）。
-
-
-<br>
 
 
 # 二、井字棋 AI（jing_zi_qi/）
