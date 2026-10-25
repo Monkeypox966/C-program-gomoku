@@ -35,6 +35,7 @@ C-program-gomoku/
 ├── README.md  LICENSE
 ```
 
+<br>
 ---
 
 # 一、五子棋人机对战系统（gomoku/）
@@ -142,6 +143,7 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 
 ---
 
+<br>
 # 二、井字棋 AI（jing_zi_qi/）
 
 控制台版井字棋，作为 Minimax + Alpha-Beta 剪枝的最小演示。人下记为 `-1`（O），AI 下记为 `1`（X），空位为 `0`。
