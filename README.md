@@ -1,9 +1,20 @@
+# C 语言五子棋与井字棋
+
 本仓库包含两个独立的 C 语言博弈程序，均采用 Minimax + Alpha-Beta 剪枝：
 
 | 程序 | 目录 | 平台 | 说明 |
 | --- | --- | --- | --- |
-| 五子棋人机对战 | `gomoku/` | 图形界面（Raylib） | 15×15 棋盘，PVP/PVE 双模式，UI、音效、悔棋、难度选择 |
-| 井字棋 AI | `jing_zi_qi/` | 控制台（CMake） | 3×3 井字棋，演示剪枝算法的最小实现 |
+| 五子棋人机对战 | `gomoku/` | Windows / MinGW-w64，Raylib 图形界面 | 15×15 棋盘，PVP/PVE 双模式，UI、音效、悔棋、难度选择 |
+| 井字棋 AI | `jing_zi_qi/` | 控制台，下文提供 Windows / MinGW-w64 构建步骤 | 3×3 井字棋，演示剪枝算法的最小实现 |
+
+仓库已公开，可以直接下载或克隆：
+
+```bash
+git clone https://github.com/Monkeypox966/C-program-gomoku.git
+cd C-program-gomoku
+```
+
+下文的构建命令使用 Windows 命令行与 MinGW-w64 工具链。仓库内五子棋构建脚本及附带库面向 Windows；不代表已经验证 Linux / macOS 图形版构建。
 
 ```
 C-program-gomoku/
@@ -58,7 +69,7 @@ C-program-gomoku/
 
 ```bat
 cd gomoku
-build.bat        # 编译并启动 gomoku.exe
+.\build.bat
 ```
 
 或手动编译：
@@ -67,7 +78,7 @@ build.bat        # 编译并启动 gomoku.exe
 gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include -L..\raylib\lib -lraylib -lgdi32 -lwinmm
 ```
 
-> 音效通过相对路径 `../resources/*.wav` 加载，因此可执行文件需从 `gomoku/` 目录运行。
+> 音效通过相对路径 `../resources/*.wav` 加载，因此可执行文件需从 `gomoku/` 目录运行。`build.bat` 不检查 gcc 的退出码；请确认编译没有报错，不能只凭它打印的 “Compilation successful” 判断构建成功。
 
 模式选择：
 
@@ -79,7 +90,7 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 - 悔棋：点右侧控制面板的 "Regret" 按钮可撤销最近一步。
 - 重开：点击 "Restart" 按钮清空棋盘重新开始。
 
-胜负判定：当任意一方在横、竖、斜方向连成 5 子时，游戏结束，屏幕显示获胜方，并伴随胜利音效。
+胜负判定：当任意一方在横、竖、斜方向连续至少 5 子时，游戏结束，屏幕显示获胜方，并伴随胜利音效。当前图形对局循环通过 `check_win()` 判断胜负，未显示棋盘下满时的平局结果。
 
 **3. 程序结构**
 
@@ -119,10 +130,15 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 - 功能：遍历棋盘，计算当前局面的总分。
 - 实现：使用 `build_table` 预构建哈希表，通过方向向量 dx, dy 扫描棋型。
 
-`int check_win() / int judge()` `[game.c / judge.c]`
+`int check_win()` `[game.c]`
 
-- 功能：判断游戏状态。
-- 返回：0（进行中）、1/2（某方获胜）、-1（平局）。
+- 功能：图形对局循环使用的连珠胜负检查。
+- 返回：0（没有五子连珠）、1（白方获胜）、2（黑方获胜）；该函数不返回平局状态。
+
+`int judge(void)` `[judge.c]`
+
+- 功能：独立的规则判定函数，额外检查棋盘是否下满。
+- 返回：0（进行中）、1（AI / 白方获胜）、2（玩家 / 黑方获胜）、-1（平局）。
 
 ---
 
@@ -130,11 +146,13 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 
 控制台版井字棋，作为 Minimax + Alpha-Beta 剪枝的最小演示。人下记为 `-1`（O），AI 下记为 `1`（X），空位为 `0`。
 
-编译（CMake）：
+编译（已安装 CMake 和 MinGW-w64，且 `gcc`、`mingw32-make` 均在 PATH 中）：
 
 ```bat
 cd jing_zi_qi
-cmake -B build && cmake --build build --config Release
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
+.\build\jing_zi_qi.exe
 ```
 
 或直接用 gcc：
@@ -143,4 +161,4 @@ cmake -B build && cmake --build build --config Release
 gcc main.c print_board.c judge.c print_the_result.c ai_move.c -o jing_zi_qi.exe -mconsole
 ```
 
-运行后按提示输入 `x y` 落子坐标即可。
+运行后按提示输入 `x y`，坐标范围为 `0` 到 `2`，并选择尚未落子的格子。当前控制台入口没有完整校验越界输入或重复落子。井字棋 `judge()` 的返回值与五子棋不同：2 表示进行中，-1 表示玩家获胜，1 表示 AI 获胜，0 表示平局。
