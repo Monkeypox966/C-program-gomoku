@@ -1,98 +1,132 @@
 # C 语言五子棋与井字棋
 
-本仓库包含两个独立的 C 语言博弈程序，均采用 Minimax + Alpha-Beta 剪枝：
+两个独立的 C 语言小游戏：带图形界面的五子棋（双人 / 人机），以及控制台井字棋。
+下面按 **Windows + MinGW-w64** 的方式编译运行，五子棋所需 Raylib 库和音效已随仓库提供。
 
-| 程序 | 目录 | 平台 | 说明 |
-| --- | --- | --- | --- |
-| 五子棋人机对战 | `gomoku/` | Windows / MinGW-w64，Raylib 图形界面 | 15×15 棋盘，PVP/PVE 双模式，UI、音效、悔棋、难度选择 |
-| 井字棋 AI | `jing_zi_qi/` | 控制台，下文提供 Windows / MinGW-w64 构建步骤 | 3×3 井字棋，演示剪枝算法的最小实现 |
+<br>
 
-仓库已公开，可以直接下载或克隆：
+## 第一步：准备编译工具
 
-```bash
+安装包含 GCC 的 [MinGW-w64 工具链](https://www.mingw-w64.org/downloads/)，将工具链的 `bin` 目录加入 PATH。
+重新打开 PowerShell，确认下面的命令能显示 GCC 版本：
+
+```powershell
+gcc --version
+```
+
+五子棋无需另装 Raylib。井字棋可以直接用 GCC 编译；下方另提供 CMake 方式。
+
+<br>
+
+## 第二步：下载项目
+
+已安装 Git 时执行：
+
+```powershell
 git clone https://github.com/Monkeypox966/C-program-gomoku.git
 cd C-program-gomoku
 ```
 
-下文的构建命令使用 Windows 命令行与 MinGW-w64 工具链。仓库内五子棋构建脚本及附带库面向 Windows；不代表已经验证 Linux / macOS 图形版构建。
+没有 Git 时，可以 [下载 ZIP](https://github.com/Monkeypox966/C-program-gomoku/archive/refs/heads/main.zip)。
+解压后，在包含 `gomoku`、`raylib` 和 `resources` 的项目根目录打开 PowerShell。
+保留这几个文件夹的相对位置，音效会从 `resources/` 读取。
 
-```text
-C-program-gomoku/
-├── gomoku/          # Raylib 五子棋
-│   ├── main.c       # 入口：主菜单 + 模式分发
-│   ├── game.c       # PVP/PVE 主循环、绘制、交互
-│   ├── aimove.c     # Minimax + Alpha-Beta 剪枝
-│   ├── score.c      # 棋型哈希表估值
-│   ├── judge.c      # 胜负/平局判定
-│   ├── gomoku.h     # 公共头文件
-│   └── build.bat    # 一键编译
-├── jing_zi_qi/      # 控制台井字棋
-│   ├── main.c  ai_move.c  judge.c
-│   ├── print_board.c  print_the_result.c
-│   ├── jing_zi_qi.h  CMakeLists.txt
-├── raylib/          # 共享图形库（include / lib）
-├── resources/       # 共享音效（knock.wav / cheers.wav）
-└── README.md  LICENSE
+<br>
+
+## 第三步：编译并启动五子棋
+
+从项目根目录进入 `gomoku`，执行：
+
+```powershell
+cd gomoku
+gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include -L..\raylib\lib -lraylib -lgdi32 -lwinmm
+```
+
+确认编译结束且没有报错后，启动游戏：
+
+```powershell
+.\gomoku.exe
+```
+
+也可以在 `gomoku/` 中执行 `.\build.bat`，它会编译并自动启动。
+该脚本未检查 GCC 的退出码，不能只凭 “Compilation successful” 判断编译成功。
+
+<br>
+
+## 第四步：选择模式并开始下棋
+
+| 操作 | 方法 |
+| --- | --- |
+| 双人对战 | 主菜单点击 **PVP**，两人轮流落子 |
+| 人机对战 | 主菜单点击 **PVE**，再按 **1 / 2 / 3** 选择简单 / 中等 / 困难 |
+| 落子 | 鼠标左键点击棋盘交叉点 |
+| 悔棋 | 点击右侧 **Regret** |
+| 重新开始 | 点击右侧 **Restart** |
+| 退出 | 关闭游戏窗口 |
+
+棋盘为 15×15，横向、纵向或斜向连续至少五子即可获胜。
+PVE 悔棋会撤销玩家与 AI 最近一回合的落子。
+当前图形对局未显示棋盘下满时的平局结果。
+
+<br>
+
+## 也可以运行井字棋
+
+**从项目根目录**执行以下命令；如果终端还在 `gomoku/`，先执行 `cd ..`：
+
+```powershell
+cd jing_zi_qi
+gcc main.c print_board.c judge.c print_the_result.c ai_move.c -o jing_zi_qi.exe -mconsole
+```
+
+编译没有报错后执行：
+
+```powershell
+.\jing_zi_qi.exe
+```
+
+按提示输入用空格分隔的坐标 `x y`，每个坐标取值为 **0、1、2**，例如 `1 1` 表示中心格。
+只选择空格；当前程序没有完整校验越界输入和重复落子。玩家为 O，AI 为 X。
+
+如果已安装 CMake 和 MinGW Make，并确认 `cmake`、`gcc`、`mingw32-make` 都在 PATH 中，
+也可以在 `jing_zi_qi/` 中使用：
+
+```powershell
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
+.\build\jing_zi_qi.exe
 ```
 
 <br>
 
-# 一、五子棋人机对战系统（gomoku/）
+## 常见问题
 
-《基于 Raylib 的五子棋人机对战系统》设计报告
+**找不到 `gcc`？** 检查是否安装了 MinGW-w64、其 `bin` 是否加入 PATH，并重新打开终端。
 
-**1. 系统功能说明**
+**提示找不到 Raylib 头文件或库？** 在 `gomoku/` 中编译，并保留同级的 `../raylib/include` 和 `../raylib/lib`。
+使用与附带库匹配的 Windows MinGW 工具链；本仓库未验证 Linux / macOS 图形版构建。
 
-本系统是一款基于 C 语言和 Raylib 图形库开发的五子棋游戏，旨在提供流畅的交互体验和具有挑战性的人机对战功能。系统主要包含以下功能：
+**启动时提示缺少 `raylib.dll`？** 可将仓库内 `raylib/lib/raylib.dll` 复制到 `gomoku.exe` 同目录。
 
-双模式对战：
+**游戏没有音效？** 从 `gomoku/` 目录启动，确保 `../resources/knock.wav` 和 `../resources/cheers.wav` 存在。
 
-- PVP（人人对战）：支持两名玩家在同一台设备上轮流落子，系统自动判定胜负。
-- PVE（人机对战）：玩家与内置 AI 进行对弈。AI 具备不同难度分级，能够进行智能攻防。
+**困难模式思考较慢？** AI 搜索深度随难度增加，可先选择 1 或 2 熟悉操作。
 
-图形化交互界面 (GUI)：
+<br>
 
-- 提供可视化的主菜单，支持模式选择。
-- 游戏界面包含标准 15x15 棋盘（含天元、星位标记）。
-- 实时显示当前落子方、步数统计以及游戏结果（胜利/失败提示）。
-- 美观的 UI 控件，包括圆角按钮、鼠标悬停变色效果、落子音效等。
+## 源码导览（可选）
 
-辅助功能：
+| 目录 | 内容 |
+| --- | --- |
+| `gomoku/` | Raylib 图形版五子棋 |
+| `jing_zi_qi/` | 控制台井字棋 |
+| `raylib/` | 图形库头文件、Windows 库与独立许可证 |
+| `resources/` | 落子和胜利音效 |
 
-- 悔棋功能：支持撤销上一步（PVE 模式下自动撤销一回合，即玩家和 AI 各撤一步）。
-- 重开局：无需重启程序即可快速开始新的一局。
-- 难度选择：在 PVE 模式下，玩家可以通过键盘快捷键选择 AI 的思考深度（简单/普通/困难）。
+两个程序均使用 Minimax + Alpha-Beta 剪枝。需要阅读实现时，可展开下方说明。
 
-**2. 编译与使用**
-
-依赖：MinGW-w64 的 `gcc`、Raylib（仓库内 `raylib/` 已附 include 与 lib）。
-
-```bat
-cd gomoku
-.\build.bat
-```
-
-或手动编译：
-
-```bat
-gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include -L..\raylib\lib -lraylib -lgdi32 -lwinmm
-```
-
-> 音效通过相对路径 `../resources/*.wav` 加载，因此可执行文件需从 `gomoku/` 目录运行。`build.bat` 不检查 gcc 的退出码；请确认编译没有报错，不能只凭它打印的 “Compilation successful” 判断构建成功。
-
-模式选择：
-
-- 点击界面上的 "PVP" 按钮进入双人对战模式。
-- 点击 "PVE" 按钮进入难度选择界面，按下键盘数字键 1（简单）、2（中等）或 3（困难）即可开始人机对战。
-
-游戏操作：
-
-- 悔棋：点右侧控制面板的 "Regret" 按钮可撤销最近一步。
-- 重开：点击 "Restart" 按钮清空棋盘重新开始。
-
-胜负判定：当任意一方在横、竖、斜方向连续至少 5 子时，游戏结束，屏幕显示获胜方，并伴随胜利音效。当前图形对局循环通过 `check_win()` 判断胜负，未显示棋盘下满时的平局结果。
-
-**3. 程序结构**
+<details>
+<summary>五子棋文件与关键函数</summary>
 
 本系统采用模块化设计，将图形界面、游戏逻辑、AI 算法分文件管理，降低了耦合度。
 
@@ -140,25 +174,12 @@ gcc main.c game.c aimove.c judge.c score.c -o gomoku.exe -O2 -I..\raylib\include
 - 功能：独立的规则判定函数，额外检查棋盘是否下满。
 - 返回：0（进行中）、1（AI / 白方获胜）、2（玩家 / 黑方获胜）、-1（平局）。
 
+井字棋的 `judge()` 返回值与五子棋不同：2 表示进行中，-1 表示玩家获胜，1 表示 AI 获胜，0 表示平局。
+
+</details>
+
 <br>
 
-# 二、井字棋 AI（jing_zi_qi/）
+## 许可证
 
-控制台版井字棋，作为 Minimax + Alpha-Beta 剪枝的最小演示。人下记为 `-1`（O），AI 下记为 `1`（X），空位为 `0`。
-
-编译（已安装 CMake 和 MinGW-w64，且 `gcc`、`mingw32-make` 均在 PATH 中）：
-
-```bat
-cd jing_zi_qi
-cmake -S . -B build -G "MinGW Makefiles"
-cmake --build build
-.\build\jing_zi_qi.exe
-```
-
-或直接用 gcc：
-
-```bat
-gcc main.c print_board.c judge.c print_the_result.c ai_move.c -o jing_zi_qi.exe -mconsole
-```
-
-运行后按提示输入 `x y`，坐标范围为 `0` 到 `2`，并选择尚未落子的格子。当前控制台入口没有完整校验越界输入或重复落子。井字棋 `judge()` 的返回值与五子棋不同：2 表示进行中，-1 表示玩家获胜，1 表示 AI 获胜，0 表示平局。
+项目使用 [BSD 3-Clause License](LICENSE)。附带 Raylib 的许可见 [raylib/LICENSE](raylib/LICENSE)。
